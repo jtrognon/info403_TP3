@@ -91,7 +91,7 @@ void find_contact_from_hash(HashTable h)
     }
     else
     {
-        printf("Le contact n'est pas présent dans l'annuaire.");
+        printf("Le contact n'est pas présent dans l'annuaire.\n");
     }
 
     free(c); // Libère la mémoire allouée

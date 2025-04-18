@@ -167,7 +167,7 @@ void find_contact_from_f(char * file_name, char * option, char * value)
         
         for (int i = 0; i < line_nb; i++)
         {
-            fscanf(f, "%s\n", dump);
+            fscanf(f, "%[^\n]\n", dump);
         }
         
         
