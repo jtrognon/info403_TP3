@@ -6,7 +6,7 @@
 #include "TP3_VEURRIER_TROGNON_hashtable.h"
 
 
-//initialisation
+// Initialise la table de hachage en mettant toutes les cases à null
 void init_hashtable(HashTable h)
 {
     for (int i = 0; i < SIZE; i++)
@@ -29,7 +29,7 @@ int hash(char *name, char *first_name)
 }
 
 
-// Retire un contact de la Hashtable
+// Extrait un contact de la première case de la table (dans l'ordre)
 Contact pop_contact(HashTable h)
 {
     Contact c_tmp;
@@ -39,10 +39,10 @@ Contact pop_contact(HashTable h)
     {
         if (h[i] != NULL) 
         {
-            c_tmp = h[i]->contact;
+            c_tmp = h[i]->contact; // Récupère le contact
             Contact_List cl = h[i];
-            h[i] = h[i]->next;
-            free(cl);
+            h[i] = h[i]->next; // Passe au suivant dans la liste 
+            free(cl); // Libère la case 
             found = true;
         }
         i++;
@@ -51,6 +51,7 @@ Contact pop_contact(HashTable h)
     return c_tmp;
 }
 
+// Vérifie si la table est vide
 bool is_empty(HashTable h)
 {
     bool empty = true;
@@ -58,7 +59,7 @@ bool is_empty(HashTable h)
     
     while (i < SIZE && empty)
     {
-        empty = h[i] == NULL;
+        empty = h[i] == NULL; // Si une case est non nulle, la table n'est pas vide
 
         i++;
     }
@@ -67,7 +68,7 @@ bool is_empty(HashTable h)
 }
 
 
-
+// Recherche un contact dans la table de hachage et l'affiche si trouvé
 void find_contact_from_hash(HashTable h)
 {
     
@@ -77,25 +78,22 @@ void find_contact_from_hash(HashTable h)
     get_first_name(first_name);
     
 
-    int hash_value = hash(name, first_name);
+    int hash_value = hash(name, first_name); // Calcule le hash index en fonction du nom et prénom.
 
     Contact * c = (Contact *) malloc(sizeof(Contact));
     
+    // Recherche dans la liste correspondante au hash index
     bool found = find_contact_from_list(c, h[hash_value], name, first_name);
     
-    if (found)
-    {
-        print_contact(*c, "nptm");
-    } 
-    else
-    {
-        printf("Le contact n'est pas présent dans l'annuaire.");
+    if (found){
+        print_contact(*c, "nptm"); // Affiche les infos du contact
     }
 
 
-    free(c);
+    free(c); // Libère la mémoire allouée
 }
 
+// Recherche un contact dans une liste chaînée
 bool find_contact_from_list(Contact * c, Contact_List cl, char name[NAME_MAX_LENGTH+1], char first_name[NAME_MAX_LENGTH+1])
 {
     bool found = false;
@@ -104,7 +102,7 @@ bool find_contact_from_list(Contact * c, Contact_List cl, char name[NAME_MAX_LEN
         if ((strcmp(cl->contact.name, name) == 0) && (strcmp(cl->contact.first_name, first_name) == 0))
         {
             found = true;
-            *c = (cl->contact);
+            *c = (cl->contact); // Copie les infos du contact trouvé
         }
 
         cl = cl->next;
@@ -113,6 +111,7 @@ bool find_contact_from_list(Contact * c, Contact_List cl, char name[NAME_MAX_LEN
     return found;
 }
 
+// Demande à l'utilisateur le nom d'un contact
 void get_name(char name[NAME_MAX_LENGTH+1])
 {
     char n[NAME_MAX_LENGTH+1];
@@ -121,11 +120,13 @@ void get_name(char name[NAME_MAX_LENGTH+1])
     {
         printf("%s%d%s", "Nom du contact (0 < taille < ", NAME_MAX_LENGTH+1, ") : ");
         scanf("%s", n);
-    } while (strlen(n) > NAME_MAX_LENGTH && strlen(n) <= 0);
+    } while (strlen(n) > NAME_MAX_LENGTH && strlen(n) <= 0); //vérification sur le taille du nom donnée
 
     strcpy(name, n);
 }
 
+
+// Demande à l'utilisateur le prénom d'un contact
 void get_first_name(char first_name[NAME_MAX_LENGTH+1])
 {
     char fn[NAME_MAX_LENGTH+1];
@@ -134,30 +135,31 @@ void get_first_name(char first_name[NAME_MAX_LENGTH+1])
     {
         printf("%s%d%s", "Prénom du contact (0 < taille < ", NAME_MAX_LENGTH+1, ") : ");
         scanf("%s", fn);
-    } while (strlen(fn) > NAME_MAX_LENGTH && strlen(fn) <= 0);
+    } while (strlen(fn) > NAME_MAX_LENGTH && strlen(fn) <= 0); //vérification sur le taille du prénom donnée
 
     strcpy(first_name, fn);
 }
 
 
-
+// Extrait et affiche les contacts avec paramètres
 void extract_data_from_hash(HashTable h)
 {
     char params[4];
-    get_printing_parameters(params);
+    get_printing_parameters(params); // Demande les paramètres
 
     for (int i=0; i < SIZE; i++)
     {
-        print_contact_list(h[i], params);
+        print_contact_list(h[i], params); // Affiche chaque liste
     }
 }
 
-
+// Vérifie si les paramètres sont valides
 bool check_parameters(char params[4]){
     int length = strlen(params);
     bool is_valid = length < 5 && length > 0;
 
     int i = 0;
+    // Vérifie chaque caractère
     while (i < length && is_valid)
     {
         is_valid = params[i] == 'n' || params[i] == 'p' || params[i] == 't' || params[i] == 'm';
@@ -168,6 +170,7 @@ bool check_parameters(char params[4]){
     return is_valid;
 }
 
+
 void get_printing_parameters(char params[4]) // erreur : si chaîne > 4 donnée
 {
     char p[4];
@@ -176,13 +179,15 @@ void get_printing_parameters(char params[4]) // erreur : si chaîne > 4 donnée
         printf("%s\n%s\n", "Nom (n), Prénom (p), Téléphone (t) et/ou Mail (m).", "Votre Choix : ");
         scanf("%s", p);
     // } while(false);
-    } while (! check_parameters(p));
+    } while (! check_parameters(p));// Recommence si invalide
     strcpy(params, p);
     // return params;
 }
 
+// Affiche une liste de contacts selon les paramètres
 void print_contact_list(Contact_List cl, char * params)
 {
+    // Parcourt la liste et affiche chaque contact
     while (cl != NULL){
         print_contact(cl->contact, params);
 
@@ -191,7 +196,7 @@ void print_contact_list(Contact_List cl, char * params)
 }
 
 
-
+// Supprime un contact de la table
 void remove_contact_from_hash(HashTable h)
 {
     bool found = false;
@@ -205,8 +210,11 @@ void remove_contact_from_hash(HashTable h)
 
     int index = hash(name, first_name);
     Contact_List cl = h[index];
+
+    // Recherche la position du contact dans la liste
     while (cl != NULL && ! found)
     {
+        printf("name : %s, first name : %s\n", cl->contact.name, cl->contact.first_name);
         if (strcmp(cl->contact.name, name)  == 0&& strcmp(cl->contact.first_name, first_name) == 0)
         {
             found = true;
@@ -216,11 +224,12 @@ void remove_contact_from_hash(HashTable h)
         cl = cl->next;
     }
 
+    // Si contact non trouvé
     if (!found)
     {
         printf("%s%s%s%s%s", "Le contact ", name, " ", first_name, " n'est pas présent dans l'annuaire.\n");
     } 
-    else if (i == 0)
+    else if (i == 0) // En début de liste
     {
         cl = h[index];
         Contact_List cl_tmp = cl;
@@ -244,13 +253,14 @@ void remove_contact_from_hash(HashTable h)
     }
 }
 
-
+// Libère toute la mémoire utilisée par la table
 void free_hash(HashTable h)
 {
     for (int i=0; i < SIZE; i++)
     {
         Contact_List cl = h[i];
         
+        // Parcourt et libère chaque liste
         while (cl != NULL){
             Contact_List cl_tmp = cl;
 
@@ -261,6 +271,7 @@ void free_hash(HashTable h)
 }
 
 
+// Insère un contact avec demande utilisateur
 void insert_contact_to_hash(HashTable h)
 {
     char name[NAME_MAX_LENGTH+1];
@@ -270,6 +281,7 @@ void insert_contact_to_hash(HashTable h)
 
     //fgets qui prend le nom de la variable, le nb de caractères max a lire et stdin pour l'entrée)
 
+    //Demande utilisateur
     printf("Nom : ");
     scanf("%s", &name);
 
@@ -282,6 +294,8 @@ void insert_contact_to_hash(HashTable h)
     printf("Email : ");
     scanf("%s", &mail);
 
+
+    // Création et insertion
     Contact * c = create_contact(name, first_name, phone, mail);
 
     add_contact(h, *c);
@@ -289,23 +303,26 @@ void insert_contact_to_hash(HashTable h)
     free(c);
 }
 
+// Ajoute un contact à la table de hachage
 void add_contact(HashTable h, Contact c)
 {
-    int index = hash(c.name, c.first_name);
+    int index = hash(c.name, c.first_name); // Calcule l'index hash
 
     Contact_List cl = malloc(sizeof(struct contact_list));
     cl->contact = c;
-    cl->next = h[index];
+    cl->next = h[index]; // Insertion en tête
     h[index] = cl;
 }
 
 
+// Affiche tous les contacts de la table
 void list_contact_from_hash(HashTable h){
     printf("----------------------------------\n");
 
     for (int i = 0; i < SIZE; i++) {
         Contact_List cl = h[i];
 
+        // Parcourt chaque liste et affiche les valeurs
         while (cl != NULL) {
             Contact c = cl->contact;
             printf("Nom : %s \n", c.name);

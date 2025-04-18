@@ -1,6 +1,0 @@
-toto celia 0102030405 toto@mail.com
-toto alice 0102030405 toto@mail.com
-toto calie 0102030405 toto@mail.com
-Bechet Léna 0102030405 wef
-VEURRIER Clément 123 wf
-Faucon Chloé 0102030405 chloe@toto.com

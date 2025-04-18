@@ -19,10 +19,10 @@ int hash(char *name, char *first_name);
 bool is_empty(HashTable h);
 
 // Retire un contact de la Hashtable
-Contact pop_contact(HashTable h);
+void pop_contact(HashTable h, Contact * c);
 
 // Ajout d'un contact
-void add_contact(HashTable h, Contact c);
+void add_contact(HashTable h, Contact_List c);
 
 // Demande et ajoute un contact
 void insert_contact_to_hash(HashTable h); 
@@ -31,7 +31,7 @@ void insert_contact_to_hash(HashTable h);
 void list_contact_from_hash(HashTable h);
 
 // Recherche d'un contact
-bool find_contact_from_list(Contact * c, Contact_List cl, char * name, char * first_name);
+void find_contact_from_list(Contact * c, Contact_List cl, char * name, char * first_name);
 void get_name(char name[NAME_MAX_LENGTH]);
 void get_first_name(char name[NAME_MAX_LENGTH]);
 void find_contact_from_hash(HashTable h);

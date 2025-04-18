@@ -1,7 +1,6 @@
 #ifndef __CONTACT_H_
 #define __CONTACT_H_
 #include <stdio.h>
-
 #define NAME_MAX_LENGTH 100
 #define PHONE_LENGTH 10
 #define MAIL_MAX_LENGTH 100
@@ -16,8 +15,14 @@ typedef struct
 
 
 
+// typedef struct
+// {
+//     Contact * * contacts;
+//     int size;
+// } Hashmap;
 
 
+//Contact * REMOVED = (Contact *) (-1);
 
 // --------------------
 // Actions sur contacts
@@ -29,19 +34,6 @@ Contact * create_contact(char * name, char * first_name, char * phone, char * ma
 
 // lister
 void print_contact(Contact c, char * options);
-
-// rechercher
-// char * get_name(void);
-// char * get_first_name(void);
-// char * get_phone(void);
-// char * get_mail(void);
-
-
-
-
-// ----------------------
-// Autres fonctionnalités
-// ----------------------
 
 // ------------------------
 // Actions liés aux options

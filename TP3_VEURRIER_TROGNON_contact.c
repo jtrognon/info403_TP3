@@ -10,36 +10,42 @@
 // --------------------
 // Actions sur contacts
 // --------------------
-// ajouter
 
+// Permet de créer un contact et retourne son adresse
 Contact * create_contact(char * name, char * first_name, char * phone, char * mail)
 {
-    Contact * c = (Contact *) malloc(sizeof(Contact));
-    strcpy(c->name, name);
-    strcpy(c->first_name, first_name);
-    strcpy(c->phone, phone);
-    strcpy(c->mail, mail);
 
-    return c;
+    Contact * c = (Contact *) malloc(sizeof(Contact));
+    
+    // Copie des informations dans les champs de contact
+    strcpy(c->name, name);             // Copie le nom
+    strcpy(c->first_name, first_name); // Copie le prénom
+    strcpy(c->phone, phone);           // Copie le numéro de téléphone
+    strcpy(c->mail, mail);             // Copie l'adresse mail
+
+    return c; // Retourne l'adresse du contact créé
 }
 
 // void get_contact(char ** name, char ** first_name, char ** phone, char ** mail);
 
 // lister
 
-
+// Affiche les informations du contact selon les options données
 void print_contact(Contact c, char * options)
 {
-    int nb_options = get_nb_options(options);
+    int nb_options = get_nb_options(options); // Récupère le nombre de champs à afficher
 
-    if (nb_options < 0 || nb_options > 4)
+    if (nb_options < 0 || nb_options > 4) // Vérifie que le nombre d’options est valide (entre 1 et 4)
     {
         exit(EXIT_FAILURE); // les options données sont vide
     }
 
+    // Parcours chaque caractère de la chaîne d'options
     for (int i = 0; i < nb_options; i++)
     {
-        char current_option = options[i]; // i+1 pour eviter le '['
+        char current_option = options[i]; //Extrait l'option actuelle
+        
+        // Sélectionne l'information à afficher selon l'option
         switch (current_option)
         {
             case 'n':
@@ -55,7 +61,7 @@ void print_contact(Contact c, char * options)
             printf("%s%s", "Mail : ", c.mail);
             break;
             default:
-            exit(EXIT_FAILURE);
+            exit(EXIT_FAILURE); // Si option inconnue, on quitte
             break;
         }
         
