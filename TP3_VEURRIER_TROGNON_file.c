@@ -4,6 +4,7 @@
 #include <getopt.h>
 #include "TP3_VEURRIER_TROGNON_file.h"
 #include "TP3_VEURRIER_TROGNON_hashtable.h"
+#include "TP3_VEURRIER_TROGNON_tree.h"
 
 // Aide
 void print_help(void)
@@ -49,7 +50,7 @@ void print_contacts(char * file_name, char * options)
     char name[NAME_MAX_LENGTH];
     char first_name[NAME_MAX_LENGTH];
     char phone[PHONE_LENGTH];
-    int int_phone;
+    int int_phone = 0;
     char mail[MAIL_MAX_LENGTH];
 
     int res = fscanf(f, "%[^ ] %[^ ] %d %s\n", name, first_name, &int_phone, mail);
@@ -90,7 +91,7 @@ int get_line_nb_of_contact(char * file_name, int option_nb, char * value)
     while (res == 1 && pos == -1)
     {
         value_tmp = strtok(line_tmp, " ");
-        for (int i = 1; i < option_nb; i++)
+        for (int i = 1; i <= option_nb; i++)
         {
             value_tmp = strtok(NULL, " ");
         }
@@ -253,12 +254,12 @@ void merge_file(char * file_name1, char * file_name2)
 
     line l;
     
-    int res = fscanf(f2, "%s\n", l);
+    int res = fscanf(f2, "%[^\n]\n", l);
     while (res == 1)
     {
         fprintf(f1, "%s\n", l);
 
-        res = fscanf(f2, "%s\n", l);
+        res = fscanf(f2, "%[^\n]\n", l);
     }
     fclose(f1);
     fclose(f2);
@@ -297,8 +298,6 @@ void load_h(HashTable h, char * file_name)
     {
         Contact * c = create_contact(name, first_name, phone, mail);
 
-        print_contact(*c, "np");
-
         add_contact(h, *c);
 
         res = fscanf(f, "%[^ ] %[^ ] %d %s\n", name, first_name, &int_phone, mail);
@@ -321,4 +320,37 @@ void save_h(HashTable h, char * file_name)
         
         add_contact_to_f(file_name, c.name, c.first_name, c.phone, c.mail);
     }
+}
+
+
+
+
+
+
+void load_tree(char * file, Node ** tree, char * options, bool without_dup){
+    char name_t[NAME_MAX_LENGTH+1];
+    char first_name_t[NAME_MAX_LENGTH+1];
+    int phone_int;
+    char phone_t[PHONE_LENGTH+1];
+    char mail_t[MAIL_MAX_LENGTH+1];
+
+    FILE *f_read = fopen(file, "r");
+
+    int res_t = fscanf(f_read, "%[^ ] %[^ ] %d %s\n", name_t, first_name_t, &phone_int, mail_t);
+
+    printf("toto\n");
+
+    while (res_t == 4){
+        sprintf(phone_t, "%d", phone_int);
+        
+        Contact * c = create_contact(name_t, first_name_t, phone_t, mail_t);
+
+        create_tree(options, tree, *c, without_dup);
+        
+        free(c);
+        
+        res_t = fscanf(f_read, "%[^ ] %[^ ] %d %s\n", name_t, first_name_t, &phone_int, mail_t);
+    }
+
+    fclose(f_read);   
 }

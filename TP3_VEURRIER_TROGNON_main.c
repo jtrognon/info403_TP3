@@ -2,59 +2,18 @@
 #include <stdlib.h>
 #include <string.h>
 #include <getopt.h>
+#include <stdbool.h>
 #include "TP3_VEURRIER_TROGNON_main.h"
 #include "TP3_VEURRIER_TROGNON_contact.h"
 #include "TP3_VEURRIER_TROGNON_file.h"
 #include "TP3_VEURRIER_TROGNON_hashtable.h"
+#include "TP3_VEURRIER_TROGNON_tree.h"
 
 int main(int argc, char * const argv[])
 {
     char * file_name = "toto.txt";
 
-    // printf("%d\n", hash("TROGNON", "Julie"));
-
     arg_action(argc, argv);
-
-    // HashTable h;
-    // init_hashtable(h);
-    
-
-    // Contact * c1 = create_contact("toto", "celia", "0102030405", "toto@mail.com");
-    // Contact * c2 = create_contact("toto", "alice", "0102030405", "toto@mail.com");
-    // Contact * c3 = create_contact("toto", "calie", "0102030405", "toto@mail.com");
-
-
-
-    // Contact_List cl = (Contact_List) malloc(sizeof(struct contact_list));
-    // cl->contact = *c1;
-    // cl->next = (Contact_List) malloc(sizeof(struct contact_list));
-    // cl->next->contact = *c2;
-    // cl->next->next = (Contact_List) malloc(sizeof(struct contact_list));
-    // cl->next->next->contact = *c3;
-    // cl->next->next->next = NULL;
-
-    // h[hash("toto", "calie")] = cl;
-
-    // load_h(h, "test.txt");
-    // save_h(h, "test.txt");
-
-    // find_contact_from_hash(h);
-    // remove_contact_from_hash(h);
-
-    // insert_contact_to_hash(h);
-    // list_contact_from_hash(h);
-
-    // extract_data_from_hash(h);
-
-    // free(cl->next->next);
-    // free(cl->next);
-    // free(cl);
-
-    // free_hash(h);
-
-    // free(c1);
-    // free(c2);
-    // free(c3);
 
     return 0;
 }
@@ -82,7 +41,7 @@ void arg_action(int argc, char *const argv[])
     int opt;
     int first_val;
 
-    while ((opt = getopt(argc, argv, "a:l:r:e:f:s:i:h")) != -1){
+    while ((opt = getopt(argc, argv, "a:l:r:e:f:s:i:d:t:h")) != -1){
         first_val = optind - 1; // Position du premier argument après l'option
         switch (opt)
         {
@@ -188,10 +147,62 @@ void arg_action(int argc, char *const argv[])
 
             interactive_menu(optarg);
             break;
-        default:
-                fprintf(stderr, "Option invalide\n");
-                break;
+        case 't':
+            if(first_val + 1 >= argc) {
+                fprintf(stderr, "Pas le bon nombre d'arguments\n");
+                exit(EXIT_FAILURE);
+            }
 
+            verify_arg(argv, first_val, 2);
+
+            if (strlen(optarg) > 1){
+                fprintf(stderr, "Une seule lettre de tri est attendue\n");
+            }
+
+            char * file = argv[optind];
+
+            Node * tree = NULL;
+
+            load_tree(file, &tree, optarg, false);
+
+            FILE *f_write = fopen(file, "w");
+
+            fclose(f_write);
+
+            write_tree_to_f(file, tree);
+
+            free_tree(tree);
+
+            break;
+        case 'd':
+            if(first_val + 1 >= argc) {
+                fprintf(stderr, "Pas le bon nombre d'arguments\n");
+                exit(EXIT_FAILURE);
+            }
+
+            verify_arg(argv, first_val, 2);
+
+            if (strlen(optarg) > 2){
+                fprintf(stderr, "Une à deux lettres de tri sont attendues\n");
+            }
+
+            char * file_d = argv[optind];
+
+            Node * tree_d = NULL;
+
+            load_tree(file_d, &tree_d, optarg, true);
+
+            FILE *f_write_d = fopen(file_d, "w");
+
+            fclose(f_write_d);
+
+            write_tree_to_f(file_d, tree_d);
+
+            free_tree(tree_d);
+            break;
+        default:
+            fprintf(stderr, "Option invalide\n");
+            break;
         }
     }
 
@@ -215,8 +226,6 @@ void interactive_menu(char *file_name)
         printf("4. Supprimer un contact\n");
         printf("5. Extraire du fichier des informations\n");
         printf("6. Afficher l'aide\n");
-        printf("7. Trier les contacts\n");
-        printf("8. Enlever les doublons\n");
         printf("9. Quitter\n");
         printf("Votre choix : ");
         scanf("%d", &choice);
@@ -246,15 +255,7 @@ void interactive_menu(char *file_name)
             case 6:
                 print_help(); // Affichage de l'aide
                 break;
-
-            case 7:
-
-                break;
-
-            case 8:
-
-                break;
-
+                
             case 9:
                 printf("Au revoir !\n"); // Quitte le programme
                 break;

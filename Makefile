@@ -2,7 +2,7 @@ CFLAGS = -Wall -Wextra -Werror
 
 all: annuaire
 
-annuaire: main.o contact.o file.o hashmap.o
+annuaire: main.o contact.o file.o hashtable.o tree.o
 	gcc $(CFLAGS) -o $@ $^
 
 main.o: TP3_VEURRIER_TROGNON_main.c TP3_VEURRIER_TROGNON_main.h
@@ -17,9 +17,13 @@ file.o: TP3_VEURRIER_TROGNON_file.c TP3_VEURRIER_TROGNON_file.h
 	gcc -c $<
 	mv TP3_VEURRIER_TROGNON_file.o $@
 
-hashmap.o: TP3_VEURRIER_TROGNON_hashtable.c TP3_VEURRIER_TROGNON_hashtable.h
+hashtable.o: TP3_VEURRIER_TROGNON_hashtable.c TP3_VEURRIER_TROGNON_hashtable.h
 	gcc -c $<
 	mv TP3_VEURRIER_TROGNON_hashtable.o $@
+
+tree.o: TP3_VEURRIER_TROGNON_tree.c TP3_VEURRIER_TROGNON_tree.h
+	gcc -c $<
+	mv TP3_VEURRIER_TROGNON_tree.o $@
 
 clean:
 	rm *.o annuaire

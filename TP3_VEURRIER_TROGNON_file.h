@@ -2,6 +2,7 @@
 #define __FILE_H_
 #include "TP3_VEURRIER_TROGNON_contact.h"
 #include "TP3_VEURRIER_TROGNON_hashtable.h"
+#include "TP3_VEURRIER_TROGNON_tree.h"
 
 #define MAX_SIZE NAME_MAX_LENGTH * 2 + PHONE_LENGTH + MAIL_MAX_LENGTH + 3 // +3 -> 3 * ','
 typedef char line[MAX_SIZE];
@@ -43,5 +44,8 @@ void load_h(HashTable h, char * file_name);
 
 //sauvegarder
 void save_h(HashTable h, char * file_name);
+
+// Chargement de l'arbre binaire à l'aide d'un fichier
+void load_tree(char * file, Node ** tree, char * options, bool without_dup);
 
 #endif

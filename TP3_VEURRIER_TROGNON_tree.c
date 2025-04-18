@@ -1,74 +1,97 @@
 #include "TP3_VEURRIER_TROGNON_tree.h"
+#include "TP3_VEURRIER_TROGNON_file.h"
 #include <string.h>
 #include <stdlib.h>
 #include <stdbool.h>
 
-Node *create_tree(char option,Node *tree, Contact c,bool sans_doublons){
-    if (tree == NULL){
-        Node *new = (Node *) malloc(sizeof(Node));
-        new->contact = c;
-        new->left = NULL;
-        new->right = NULL;
+
+void create_tree(char * option, Node ** tree, Contact c, bool without_dup){
+    if (*tree == NULL){
+        printf("name_t : %s\n", c.name);
+        *tree = (Node *) malloc(sizeof(Node));
+        (*tree)->contact = c;
+        (*tree)->left = NULL;
+        (*tree)->right = NULL;
 
 
-        return new;
-    }
+    } else {
+        int compare_1 = compare_contacts(c, (*tree)->contact,option[0]);
+        int compare_2;
 
-    int compare = compare_contacts(c, tree->contact,option);
-    if (compare>0){
-        tree->right = create_tree(option,tree->right,c,sans_doublons);
+        if (without_dup){
+            compare_2 = compare_contacts(c, (*tree)->contact,option[1]);
+        }
+
+        if (compare_1>0 || (without_dup && (compare_1 != compare_2) && (compare_1 + compare_2 > 0))){
+            create_tree(option,&(*tree)->right,c,without_dup);
+        }
+        else if(compare_1<0 || ! without_dup || (without_dup && (compare_1 != compare_2))){
+            create_tree(option,&(*tree)->left,c,without_dup);
+        }
     }
-    else if(compare<0 || (sans_doublons = false)){
-        tree->left = create_tree(option,tree->left,c,sans_doublons);
-    }
-    else
-   
-    return tree;
 
 }
 
 int compare_contacts(Contact c1, Contact c2, char option){
-    int res;
     switch(option){
         case 'n' :
-            res = strcmp(c1.name,c2.name);
+            return strcmp(c1.name,c2.name);
             break;
         case 'p' :
-            res = strcmp(c1.first_name,c2.first_name);
+            return strcmp(c1.first_name,c2.first_name);
             break;
         case 't' :
-            res = strcmp(c1.phone,c2.phone);
+            return strcmp(c1.phone,c2.phone);
             break;
         case 'm' :
-            res = strcmp(c1.mail,c2.mail);
+            return strcmp(c1.mail,c2.mail);
             break;
         default:
             return 0;
           
     }
-
 }
 
-// case 't':
-//     if(first_val + 1 >= argc) {
-//         fprintf(stderr, "Pas le bon nombre d'arguments\n");
-//         exit(EXIT_FAILURE);
-//     }
+void write_tree_to_f(char * file_name, Node * tree)
+{
+    if (tree != NULL){
 
-//     verify_arg(argv, first_val, 2);
+        char name[NAME_MAX_LENGTH+1];
+        char first_name[NAME_MAX_LENGTH+1];
+        char phone[PHONE_LENGTH+1];
+        char mail[MAIL_MAX_LENGTH+1];
+        
+        printf("titi : %s\n", tree->contact.name);
+        strcpy(name, tree->contact.name);
+        strcpy(first_name, tree->contact.first_name);
+        strcpy(phone, tree->contact.phone);
+        strcpy(mail, tree->contact.mail);
+        
+        // add_contact_to_f(char * file_name, char * name, char * first_name, char * phone, char * mail)
+        if (is_leaf(tree))
+        {
+            add_contact_to_f(file_name, name, first_name, phone, mail);
+        } 
+        else 
+        {
+            write_tree_to_f(file_name, tree->left);
+            add_contact_to_f(file_name, name, first_name, phone, mail);
+            write_tree_to_f(file_name, tree->right);
+        }
+    }
+}
 
-//     char option = optarg;
-//     char file = argv[optind]
+bool is_leaf(Node * tree)
+{
+    return tree->left == NULL && tree->right == NULL;
+}
 
-//     File *f = fopen(file, "r");
-//     while (fscanf(f, "%[^ ] %[^ ] %[^ ] %[^\n]\n", name, first_name, phone, mail) == 4){
-
-//         Contact c = create_contact(name, first_name, phone, mail);
-//         tree = create_tree(tree, c,option);
-//     }
-//     fclose(f);
-
-//     File *f = fopen(file, "w");
-//     fonction_qui_va_afficher(f,tree) jsp trop
-//     fclose(f);
-//     break;
+void free_tree(Node * tree)
+{
+    if (tree != NULL)
+    {
+        free_tree(tree->left);
+        free_tree(tree->right);
+        free(tree);
+    }
+}

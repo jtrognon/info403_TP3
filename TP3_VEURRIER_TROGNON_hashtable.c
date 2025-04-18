@@ -85,10 +85,14 @@ void find_contact_from_hash(HashTable h)
     // Recherche dans la liste correspondante au hash index
     bool found = find_contact_from_list(c, h[hash_value], name, first_name);
     
-    if (found){
+    if (found)
+    {
         print_contact(*c, "nptm"); // Affiche les infos du contact
     }
-
+    else
+    {
+        printf("Le contact n'est pas présent dans l'annuaire.");
+    }
 
     free(c); // Libère la mémoire allouée
 }
@@ -214,7 +218,6 @@ void remove_contact_from_hash(HashTable h)
     // Recherche la position du contact dans la liste
     while (cl != NULL && ! found)
     {
-        printf("name : %s, first name : %s\n", cl->contact.name, cl->contact.first_name);
         if (strcmp(cl->contact.name, name)  == 0&& strcmp(cl->contact.first_name, first_name) == 0)
         {
             found = true;
