@@ -153,25 +153,27 @@ void arg_action(int argc, char *const argv[])
                 exit(EXIT_FAILURE);
             }
 
-            verify_arg(argv, first_val, 2);
+            verify_arg(argv, first_val, 2); // Verifie que 2 arguments sont bien apssés en paramètre
 
+            // Vérifie que l'argument d'option du tri ne contient qu’un seul caractère (ex : n)
             if (strlen(optarg) > 1){
                 fprintf(stderr, "Une seule lettre de tri est attendue\n");
             }
 
-            char * file = argv[optind];
+            char * file = argv[optind]; // Récupère le nom du fichier fourni après l’option
 
-            Node * tree = NULL;
+            Node * tree = NULL; // Initialise l’arbre binaire a NULL
 
+            //Appelle la fonction load_tree qui charge le fichier passé en paramètre dans l'arbre. On met without_dup en false 
             load_tree(file, &tree, optarg, false);
 
-            FILE *f_write = fopen(file, "w");
+            FILE *f_write = fopen(file, "w"); // Ouvre le fichier pour le vider
 
-            fclose(f_write);
+            fclose(f_write); //Permet d'effacer le contenu du fichier qu'on vient d'ouvrir
 
-            write_tree_to_f(file, tree);
+            write_tree_to_f(file, tree); // Réécrit les contacts triés à partir de l’arbre dans le fichier
 
-            free_tree(tree);
+            free_tree(tree); //Libère la mémoire qu'on à donné à notre arbre 
 
             break;
         case 'd':
@@ -180,8 +182,9 @@ void arg_action(int argc, char *const argv[])
                 exit(EXIT_FAILURE);
             }
 
-            verify_arg(argv, first_val, 2);
+            verify_arg(argv, first_val, 2); // Vérifie que l’on a bien 2 arguments après -d
 
+                // Vérifie que l’argument d’option contient au plus 2 lettres
             if (strlen(optarg) > 2){
                 fprintf(stderr, "Une à deux lettres de tri sont attendues\n");
             }
@@ -190,18 +193,19 @@ void arg_action(int argc, char *const argv[])
 
             Node * tree_d = NULL;
 
+            // Charge les contacts dans un arbre tout en supprimant les doublons (without_dup qui est donc en true ici)
             load_tree(file_d, &tree_d, optarg, true);
 
-            FILE *f_write_d = fopen(file_d, "w");
+            FILE *f_write_d = fopen(file_d, "w"); // Ouvre le fichier pour le vider
 
-            fclose(f_write_d);
+            fclose(f_write_d); //Permet d'effacer le contenu du fichier qu'on vient d'ouvrir
 
-            write_tree_to_f(file_d, tree_d);
+            write_tree_to_f(file_d, tree_d); // Réécrit dans le fichier les contacts sans doublons
 
-            free_tree(tree_d);
+            free_tree(tree_d); //Libère la mémoire qu'on à donné à notre arbre 
             break;
         default:
-            fprintf(stderr, "Option invalide\n");
+            fprintf(stderr, "Option invalide\n"); // Erreur si l'on rentre un choix autre que ceux possibles 
             break;
         }
     }
@@ -255,7 +259,7 @@ void interactive_menu(char *file_name)
             case 6:
                 print_help(); // Affichage de l'aide
                 break;
-                
+
             case 9:
                 printf("Au revoir !\n"); // Quitte le programme
                 break;
